@@ -22,6 +22,7 @@ namespace Project_2
         private portReader _portReader;
         private Connector.Connector _connector;
         private bool _sgn;
+       
 
         public MainWindow()
         {
@@ -46,6 +47,7 @@ namespace Project_2
             dialog.Filter = "Text documents (.txt)|*.txt";
             dialog.ShowDialog();
             openfiledialogButton.Content = (_ipReader.ReadFile(dialog.FileName));
+            
             _sgn = true;
 
         }
@@ -66,7 +68,8 @@ namespace Project_2
         {
             _portReader.ReadPorts(portTextBox.Text);
             _handler.setTimeout(short.Parse(TimeoutTextButton.Text));
-            _connector.FindMeSomething();
+            _handler.setThreads(short.Parse(ThreadsTextButton.Text));
+            Task.Run(()=>_connector.FindMeSomething());
         }
         private void OnConnectionStatusChanged(string message)
         {
@@ -76,6 +79,9 @@ namespace Project_2
 
         }
 
-        
+        private void TimeoutTextButton_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }

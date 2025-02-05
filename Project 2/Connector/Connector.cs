@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Threading;
 using Project_2.HostHandler;
+using System.Collections.Concurrent;
 
 namespace Project_2.Connector
 {
@@ -13,16 +14,55 @@ namespace Project_2.Connector
         private  CancellationToken CT;
         private DataHandler _handler;
         public event Action<string> ConnectionStatusChanged;
+        private TcpClientPool _clientPool;
+
 
         //private async 
 
         public Connector(DataHandler handler)
         {
             _handler = handler;
+            _clientPool = new TcpClientPool(handler.getThreads());
         }
+
+
+
+
          public void Connect(IPAddress ipAddress, short[] ports, short timeout)
         {
-            Parallel.For(0, ports.Length, async port =>
+            Parallel.ForEach(ports, port =>
+            {
+                TcpClient client = null;
+                try
+                {
+                    client = _clientPool.GetClient();
+                    client.Connect(ipAddress, port);
+                    ConnectionStatusChanged?.Invoke($"{ipAddress}:{port} - подключение успешно");
+                }
+                catch (SocketException)
+                {
+                    ConnectionStatusChanged?.Invoke($"{ipAddress}:{port} - подключение НЕ УДАЛОСЬ");
+                }
+                catch (Exception ex)
+                {
+                    ConnectionStatusChanged?.Invoke($"{ipAddress}:{port} - ошибка: {ex.Message}");
+                }
+                finally
+                {
+                    if (client != null)
+                    {
+                        client.Close();
+                        _clientPool.ReturnClient(client);
+                    }
+                }
+            });
+
+
+
+
+
+                    /*
+                    Parallel.For(0, ports.Length, async port =>
             {
                 using (TcpClient client = new TcpClient())
                 {
@@ -47,16 +87,20 @@ namespace Project_2.Connector
                 
                     client.Close();
                     client.Dispose();
+                    
+
                 }
             });
+                    */
 
         }
 
-         public void FindMeSomething()
+          public void FindMeSomething()
         {
             foreach (IPAddress address in _handler.getIPAddresses())
             {
                 Connect(address, _handler.getPorts(), _handler.getTimeout());
+                
             }
         }
     }

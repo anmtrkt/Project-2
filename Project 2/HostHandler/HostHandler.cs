@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Text;
 
 namespace Project_2.HostHandler
 {
@@ -11,6 +12,7 @@ namespace Project_2.HostHandler
         private IPAddress[] _ipAddresses;
         private short[] _ports;
         private short _timeout;
+        private short _threads;
         
         public DataHandler()
         {
@@ -20,10 +22,12 @@ namespace Project_2.HostHandler
         public void setIPAddresses(IPAddress[] ipAddresses) { _ipAddresses = ipAddresses;}
         public void setPorts(short[] ports) { _ports = ports;}
         public void setTimeout(short timeout) { _timeout = timeout;}
+        public void setThreads(short threads) { _threads = threads;}
 
         public IPAddress[] getIPAddresses() { return _ipAddresses;}
         public short[] getPorts() { return _ports;}
         public short getTimeout() { return _timeout;}
+        public short getThreads() { return _threads;}
 
     }
     public class ipReader
@@ -43,21 +47,11 @@ namespace Project_2.HostHandler
 
         }
 
-        public v
-        private static IEnumerable<IPAddress> EnumerateIpRange(IPAddress from, IPAddress to)
-        {oid ReadLine(string line)
+        public void ReadLine(string line)
         {
             _handler.setIPAddresses(ParseIPAddresses(line.Split()));
         }
 
-            var buffer = from.GetAddressBytes();
-            do
-            {
-                yield return from = new IPAddress(buffer);
-                int i = buffer.Length - 1;
-                while (i >= 0 && ++buffer[i] == 0) i--;
-            } while (!from.Equals(to));
-        }
 
         private IPAddress[] ParseIPAddresses(string[] ipStrings)
         {
@@ -69,16 +63,18 @@ namespace Project_2.HostHandler
                     if (str.Contains("-") == true)
                     {
                         string[] str2 = str.Split('-');
-                        /////////////////////
 
+
+                        IPAddress from = IPAddress.Parse(str2[0]);
+                        IPAddress to = IPAddress.Parse(str2[1]);
+                        var buffer = from.GetAddressBytes();
                         do
                         {
-                            yield return from = new IPAddress(buffer);
+                            from = new IPAddress(buffer);
+                            iPAddresses.Add(from);
                             int i = buffer.Length - 1;
                             while (i >= 0 && ++buffer[i] == 0) i--;
                         } while (!from.Equals(to));
-
-
 
 
                     }
@@ -89,6 +85,7 @@ namespace Project_2.HostHandler
                     }
 
                 }
+                
                 return iPAddresses.ToArray();
             }
             catch ( Exception e)
@@ -101,25 +98,7 @@ namespace Project_2.HostHandler
         }
 
 
-            /*
-
-            IPAddress[] ipAddresses = new IPAddress[ipStrings.Length];
-            for (short i = 0; i < ipStrings.Length; i++)
-            {
-
-                if (IPAddress.TryParse(ipStrings[i], out IPAddress ipAddress))
-                {
-                    ipAddresses[i] = ipAddress;
-                }
-                else
-                {
-                    ipAddresses[i] = null;
-                }
-            }
-            return ipAddresses;
-            */
-        
-
+    
 
     }
     public class portReader
@@ -156,6 +135,7 @@ namespace Project_2.HostHandler
                             result.Add(short.Parse(part));
                         }
                     }
+                    
                     return result.ToArray();
                 case false:
                     foreach (string part in rawPorts)

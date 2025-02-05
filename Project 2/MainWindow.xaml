@@ -14,8 +14,9 @@
         <TextBox x:Name="portTextBox" HorizontalAlignment="Left" Height="20" Margin="10,10,0,0" TextWrapping="Wrap" Text="80,81,82" VerticalAlignment="Top" Width="65" Background="#FF9E9C9C"   />
         <Button x:Name="openfiledialogButton" Content="Выбрать файл с айпи" HorizontalAlignment="Left" Height="28" Margin="10,99,0,0" VerticalAlignment="Top" Width="189" Click="openFileDialog"/>
         <Button x:Name="Start" Content="Старт!" HorizontalAlignment="Left" Height="78" Margin="34,335,0,0" VerticalAlignment="Top" Width="242" Click="StartButton"/>
-        <TextBox x:Name="TimeoutTextButton" HorizontalAlignment="Left" Height="20" Margin="104,10,0,0" TextWrapping="Wrap" Text="1000" VerticalAlignment="Top" Width="95" Background="#FF9A9A9A" />
+        <TextBox x:Name="TimeoutTextButton" HorizontalAlignment="Left" Height="20" Margin="104,10,0,0" TextWrapping="Wrap" Text="1000" VerticalAlignment="Top" Width="95" Background="#FF9A9A9A" TextChanged="TimeoutTextButton_TextChanged" />
         <TextBox x:Name="ipTxtBox" HorizontalAlignment="Left" Height="18" Margin="10,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="142" Background="#FF949292" TextChanged="ipTxtBox_TextChanged"/>
         <ListBox x:Name="statusLstBox" HorizontalAlignment="Left" Height="178" Margin="26,152,0,0" VerticalAlignment="Top" Width="294" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+        <TextBox x:Name="ThreadsTextButton" HorizontalAlignment="Left" Height="20" Margin="225,10,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="95" Background="#FF9A9A9A" TextChanged="TimeoutTextButton_TextChanged" />
     </Grid>
 </Window>
