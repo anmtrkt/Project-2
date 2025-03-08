@@ -64,9 +64,8 @@ namespace Project_2.HostHandler
                     {
                         string[] str2 = str.Split('-');
 
-
-                        IPAddress from = IPAddress.Parse(str2[0]);
-                        IPAddress to = IPAddress.Parse(str2[1]);
+                        IPAddress from = IPAddress.Parse(str2[0].Trim());
+                        IPAddress to = IPAddress.Parse(str2[1].Trim());
                         var buffer = from.GetAddressBytes();
                         do
                         {
@@ -80,7 +79,6 @@ namespace Project_2.HostHandler
                     }
                     else
                     {
-                        
                         iPAddresses.Add(IPAddress.Parse(str));
                     }
 

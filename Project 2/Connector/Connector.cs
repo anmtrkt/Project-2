@@ -19,10 +19,11 @@ namespace Project_2.Connector
 
         //private async 
 
-        public Connector(DataHandler handler)
+        public Connector(DataHandler handler, TcpClientPool pool)
         {
             _handler = handler;
-            _clientPool = new TcpClientPool(handler.getThreads());
+            _clientPool = pool;
+
         }
 
 
@@ -46,12 +47,13 @@ namespace Project_2.Connector
                 catch (Exception ex)
                 {
                     ConnectionStatusChanged?.Invoke($"{ipAddress}:{port} - ошибка: {ex.Message}");
+                    client.Dispose();
+                    
                 }
                 finally
                 {
                     if (client != null)
                     {
-                        client.Close();
                         _clientPool.ReturnClient(client);
                     }
                 }

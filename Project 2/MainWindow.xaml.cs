@@ -20,19 +20,20 @@ namespace Project_2
         private DataHandler _handler;
         private ipReader _ipReader;
         private portReader _portReader;
+        private TcpClientPool _pool;
         private Connector.Connector _connector;
         private bool _sgn;
-       
-
+        private string fileName;
+        
         public MainWindow()
         {
             InitializeComponent();
 
             _handler = new DataHandler();
-            _connector = new Connector.Connector(_handler);
+            _pool = new TcpClientPool(_handler.getThreads());
+            _connector = new Connector.Connector(_handler, _pool);
             _ipReader = new ipReader(_handler);
             _portReader = new portReader(_handler);
-            ipTxtBox.Text = "100.80.80.90";
             _connector.ConnectionStatusChanged += OnConnectionStatusChanged;
 
         }
@@ -46,17 +47,25 @@ namespace Project_2
             dialog.DefaultExt = ".txt";  
             dialog.Filter = "Text documents (.txt)|*.txt";
             dialog.ShowDialog();
-            openfiledialogButton.Content = (_ipReader.ReadFile(dialog.FileName));
-            
+            openfiledialogButton.Content = dialog.FileName;
+            fileName = dialog.FileName;
             _sgn = true;
-
         }
 
-
+        private void readStringOrFile()
+        {
+            if (_sgn)
+            {
+                _ipReader.ReadFile(fileName);
+            }
+            else
+            {
+                _ipReader.ReadLine(ipTxtBox.Text);
+            }
+        }
 
         private void ipTxtBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            _ipReader.ReadLine(ipTxtBox.Text);
             if (_sgn == true) 
             { 
                 openfiledialogButton.Content = "Выбрать файл с айпи";
@@ -66,6 +75,7 @@ namespace Project_2
 
         private void StartButton(object sender, RoutedEventArgs e)
         {
+            readStringOrFile();
             _portReader.ReadPorts(portTextBox.Text);
             _handler.setTimeout(short.Parse(TimeoutTextButton.Text));
             _handler.setThreads(short.Parse(ThreadsTextButton.Text));

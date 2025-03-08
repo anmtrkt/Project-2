@@ -17,21 +17,30 @@ namespace Project_2.Connector
         {
             _clients = new ConcurrentBag<TcpClient>();
             _maxClients = maxClients;
+            CreatePool(_maxClients);
         }
-
+        /// <summary>
+        /// Заполняет пул _count кол-вом TcpClientов.
+        /// </summary>
+        /// <param name="count"></param>
+        /// <returns>true</returns>
+        private bool CreatePool(short count)     
+        {
+           for(int i = 0; i < count; i++)
+           {
+               _clients.Add(new TcpClient());
+           }
+           return true;
+        }
         public TcpClient GetClient()
         {
             if (_clients.TryTake(out TcpClient client))
             {
                 return client;
             }
-            else if (_clients.Count < _maxClients)
-            {
-                return new TcpClient();
-            }
             else
             {
-                _clients.
+                return new TcpClient();
             }
         }
 
